@@ -22,6 +22,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -84,13 +85,15 @@ public class DcsSampleMainActivity extends Activity implements View.OnClickListe
         initFramework();
     }
 
+
+
     private void initView() {
-        Button openLogBtn = (Button) findViewById(R.id.openLogBtn);
-        openLogBtn.setOnClickListener(this);
+//        Button openLogBtn = (Button) findViewById(R.id.openLogBtn);
+//        openLogBtn.setOnClickListener(this);
         voiceButton = (Button) findViewById(R.id.voiceBtn);
         voiceButton.setOnClickListener(this);
 
-        textViewTimeStopListen = (TextView) findViewById(R.id.id_tv_time_0);
+//        textViewTimeStopListen = (TextView) findViewById(R.id.id_tv_time_0);
         textViewRenderVoiceInputText = (TextView) findViewById(R.id.id_tv_RenderVoiceInputText);
         mTopLinearLayout = (LinearLayout) findViewById(R.id.topLinearLayout);
 
@@ -123,12 +126,12 @@ public class DcsSampleMainActivity extends Activity implements View.OnClickListe
         });
         mTopLinearLayout.addView(webView);
 
-        Button mPreviousSongBtn = (Button) findViewById(R.id.previousSongBtn);
+/*        Button mPreviousSongBtn = (Button) findViewById(R.id.previousSongBtn);
         pauseOrPlayButton = (Button) findViewById(R.id.pauseOrPlayBtn);
         Button mNextSongBtn = (Button) findViewById(R.id.nextSongBtn);
         mPreviousSongBtn.setOnClickListener(this);
         pauseOrPlayButton.setOnClickListener(this);
-        mNextSongBtn.setOnClickListener(this);
+        mNextSongBtn.setOnClickListener(this);*/
     }
 
     private void initFramework() {
@@ -255,7 +258,7 @@ public class DcsSampleMainActivity extends Activity implements View.OnClickListe
         isStopListenReceiving = false;
         voiceButton.setText(getResources().getString(R.string.stop_record));
         long t = System.currentTimeMillis() - startTimeStopListen;
-        textViewTimeStopListen.setText(getResources().getString(R.string.time_record, t));
+//        textViewTimeStopListen.setText(getResources().getString(R.string.time_record, t));
     }
 
     private void startRecording() {
@@ -263,7 +266,7 @@ public class DcsSampleMainActivity extends Activity implements View.OnClickListe
         isStopListenReceiving = true;
         deviceModuleFactory.getSystemProvider().userActivity();
         voiceButton.setText(getResources().getString(R.string.start_record));
-        textViewTimeStopListen.setText("");
+//        textViewTimeStopListen.setText("");
         textViewRenderVoiceInputText.setText("");
     }
 
@@ -300,7 +303,7 @@ public class DcsSampleMainActivity extends Activity implements View.OnClickListe
                 platformFactory.getVoiceInput().startRecord();
                 doUserActivity();
                 break;
-            case R.id.openLogBtn:
+/*            case R.id.openLogBtn:
                 openAssignFolder(FileUtil.getLogFilePath());
                 break;
             case R.id.previousSongBtn:
@@ -318,7 +321,7 @@ public class DcsSampleMainActivity extends Activity implements View.OnClickListe
                     platformFactory.getPlayback().pause(playPauseResponseListener);
                 }
                 doUserActivity();
-                break;
+                break;*/
             default:
                 break;
         }
@@ -388,6 +391,14 @@ public class DcsSampleMainActivity extends Activity implements View.OnClickListe
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            moveTaskToBack(true);
+        }
+        return true;
     }
 
     @Override

@@ -23,7 +23,7 @@
         <activity
             android:name="com.baidu.duer.dcs.androidapp.DcsSampleOAuthActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,12 +34,12 @@
         <activity
             android:name="com.baidu.duer.dcs.androidapp.DcsSampleMainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.baidu.duer.dcs.androidapp.DcsSampleScreenHtmlActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
