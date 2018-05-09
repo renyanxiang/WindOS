@@ -19,11 +19,15 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -52,6 +56,7 @@ import com.baidu.duer.dcs.util.NetWorkUtil;
 import com.baidu.duer.dcs.wakeup.WakeUp;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
 /**
  * 主界面 activity
@@ -75,15 +80,58 @@ public class DcsSampleMainActivity extends Activity implements View.OnClickListe
     private String mHtmlUrl;
     // 唤醒
     private WakeUp wakeUp;
+    private LinearLayout ll_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dcs_sample_activity_main);
+//        hideBottomUIMenu();
+        //透明状态栏
+        int sdk = Build.VERSION.SDK_INT;
+        if (sdk >= Build.VERSION_CODES.KITKAT) {
+            Window window = getWindow();
+            //透明状态栏
+            window.setFlags(
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            if (sdk >= Build.VERSION_CODES.N) {
+                try {
+                    Class decorViewCls = Class.forName("com.android.internal.policy.DecorView");
+                    Field statusBarColorField = decorViewCls.getDeclaredField("mSemiTransparentStatusBarColor");
+                    statusBarColorField.setAccessible(true);
+                    statusBarColorField.setInt(getWindow().getDecorView(), Color.TRANSPARENT);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         initView();
         initOauth();
         initFramework();
     }
+
+    /**
+     * 隐藏虚拟按键，并且全屏
+     */
+/*    protected void hideBottomUIMenu() {
+        //隐藏虚拟按键，并且全屏
+        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+            View v = this.getWindow().getDecorView();
+            v.setSystemUiVisibility(View.GONE);
+        } else if (Build.VERSION.SDK_INT >= 19) {
+            //for new api versions.
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
+    }*/
 
 
 
@@ -95,6 +143,7 @@ public class DcsSampleMainActivity extends Activity implements View.OnClickListe
 
 //        textViewTimeStopListen = (TextView) findViewById(R.id.id_tv_time_0);
         textViewRenderVoiceInputText = (TextView) findViewById(R.id.id_tv_RenderVoiceInputText);
+        ll_layout = (LinearLayout) findViewById(R.id.ll_layout);
         mTopLinearLayout = (LinearLayout) findViewById(R.id.topLinearLayout);
 
         webView = new BaseWebView(DcsSampleMainActivity.this.getApplicationContext());
@@ -113,8 +162,10 @@ public class DcsSampleMainActivity extends Activity implements View.OnClickListe
             @Override
             public void onPageFinished(WebView view, String url) {
                 if (!url.equals(mHtmlUrl) && !"about:blank".equals(mHtmlUrl)) {
+                    ll_layout.setVisibility(View.VISIBLE);
                     platformFactory.getWebView().linkClicked(url);
                 }
+            //    view.setBackgroundColor(0);
 
                 mHtmlUrl = url;
             }
@@ -187,28 +238,28 @@ public class DcsSampleMainActivity extends Activity implements View.OnClickListe
                     @Override
                     public void onPaused() {
                         super.onPaused();
-                        pauseOrPlayButton.setText(getResources().getString(R.string.audio_paused));
+//                        pauseOrPlayButton.setText(getResources().getString(R.string.audio_paused));
                         isPause = true;
                     }
 
                     @Override
                     public void onPlaying() {
                         super.onPlaying();
-                        pauseOrPlayButton.setText(getResources().getString(R.string.audio_playing));
+//                        pauseOrPlayButton.setText(getResources().getString(R.string.audio_playing));
                         isPause = false;
                     }
 
                     @Override
                     public void onCompletion() {
                         super.onCompletion();
-                        pauseOrPlayButton.setText(getResources().getString(R.string.audio_default));
+//                        pauseOrPlayButton.setText(getResources().getString(R.string.audio_default));
                         isPause = false;
                     }
 
                     @Override
                     public void onStopped() {
                         super.onStopped();
-                        pauseOrPlayButton.setText(getResources().getString(R.string.audio_default));
+//                        pauseOrPlayButton.setText(getResources().getString(R.string.audio_default));
                         isPause = true;
                     }
                 });
@@ -221,7 +272,7 @@ public class DcsSampleMainActivity extends Activity implements View.OnClickListe
                 .addRenderVoiceInputTextListener(new ScreenDeviceModule.IRenderVoiceInputTextListener() {
                     @Override
                     public void onRenderVoiceInputText(RenderVoiceInputTextPayload payload) {
-                        textViewRenderVoiceInputText.setText(payload.text);
+                        textViewRenderVoiceInputText.setText("    " + payload.text+"    ");
                     }
 
                 });
@@ -236,6 +287,7 @@ public class DcsSampleMainActivity extends Activity implements View.OnClickListe
     private IWakeUp.IWakeUpListener wakeUpListener = new IWakeUp.IWakeUpListener() {
         @Override
         public void onWakeUpSucceed() {
+            ll_layout.setVisibility(View.INVISIBLE);
             Toast.makeText(DcsSampleMainActivity.this,
                     getResources().getString(R.string.wakeup_succeed),
                     Toast.LENGTH_SHORT)
@@ -266,6 +318,7 @@ public class DcsSampleMainActivity extends Activity implements View.OnClickListe
         isStopListenReceiving = true;
         deviceModuleFactory.getSystemProvider().userActivity();
         voiceButton.setText(getResources().getString(R.string.start_record));
+        ll_layout.setVisibility(View.INVISIBLE);
 //        textViewTimeStopListen.setText("");
         textViewRenderVoiceInputText.setText("");
     }

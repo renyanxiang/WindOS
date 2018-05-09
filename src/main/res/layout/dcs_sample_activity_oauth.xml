@@ -2,19 +2,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:background="@drawable/shape_white"
         android:text="@string/client_id"
+        android:textColor="@color/black"
         android:textSize="16sp" />
 
     <EditText
         android:id="@+id/edit_client_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:background="@drawable/shape_white"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:textColor="@color/black"
         android:layout_marginTop="10dp"
         android:enabled="false" />
 
@@ -26,6 +37,6 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/btn_bg"
         android:text="@string/login"
-        android:textColor="@android:color/white" />
+        android:textColor="@color/black" />
 
 </LinearLayout>

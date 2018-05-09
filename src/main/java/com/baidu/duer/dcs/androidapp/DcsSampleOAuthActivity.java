@@ -41,9 +41,9 @@ public class DcsSampleOAuthActivity extends Activity implements View.OnClickList
     // client_id，就是oauth的client_id
     private static final String CLIENT_ID = "eEYGfOr1SyIwGVyfjSd3YYrcdzOaKvOc";
     // 是否每次授权都强制登陆
-    private boolean isForceLogin = true;
+    private boolean isForceLogin = false;
     // 是否每次都确认登陆
-    private boolean isConfirmLogin = true;
+    private boolean isConfirmLogin = false;
     private EditText editTextClientId;
     private Button oauthLoginButton;
     private BaiduOauthImplicitGrant baiduOauthImplicitGrant;
